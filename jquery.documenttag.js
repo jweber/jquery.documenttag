@@ -8,7 +8,9 @@
         maskColor: '#333',
         maskOpacity: '0.8',
 
-        tagPropertiesPanel: ''
+        onTagSelect: undefined,
+        onTagUnselect: undefined,
+        onTagAdd: undefined
     };
     
     var maskElements = 
@@ -63,6 +65,11 @@
             addTag( this );
         },
         
+        getTags: function()
+        {
+            return tags;
+        },
+        
         deleteTag: function( tag )
         {
             var index;
@@ -81,9 +88,7 @@
                 hideMasks();
                 tags.splice( index, 1 );
             }
-        },
-        
-        attribute: function( 
+        }
     };
     
     function addTag( document )
@@ -168,6 +173,12 @@
     
         tags.push( tag );       
         documentContainer.prepend( tag.element );
+        
+        if ( settings.onTagAdd )
+        {
+            settings.onTagAdd( tag );
+        }
+        
         return tag;
     }
     
