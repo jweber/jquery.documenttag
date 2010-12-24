@@ -6,7 +6,9 @@
     {
         maskEnabled: true,
         maskColor: '#333',
-        maskOpacity: '0.8'            
+        maskOpacity: '0.8',
+
+        tagPropertiesPanel: ''
     };
     
     var maskElements = 
@@ -43,28 +45,76 @@
                 maskElements.leftMask = $("<div/>").css( maskStyles ).prependTo( documentContainer );
 
                 maskElements.topMask.css("width", this.width());
-                maskElements.bottomMask.css("width", this.width());                
+                maskElements.bottomMask.css("width", this.width());
+
+                $.each( maskElements, function()
+                {
+                    this.click(function()
+                    {
+                        hideMasks();
+                    });
+                });
             }
         },
         
         addTag: function()
         {
+            hideMasks();
             addTag( this );
+        },
+        
+        deleteTag: function( tag )
+        {
+            var index;
+            $.each( tags, function( i )
+            {
+                if ( this == tag )
+                {
+                    index = i;
+                    return true;
+                }
+            });
+               
+            if ( index != undefined )
+            {
+                tag.element.remove();
+                hideMasks();
+                tags.splice( index, 1 );
+            }
         }
     };
-
+    
     function addTag( document )
     {      
         var tag = 
         {
-            element: $("<div/>").addClass("tag").css({width: '100px', height: '100px'}),
+            element: $("<div/>"),
+            attributes: {},
             width: 100,
             height: 100,
-            topOffset: 0,
+            topOffset: $(window).scrollTop() + document.offset().top,
             bottomOffset: 0,
-            leftOffset: 0,
+            leftOffset: $(window).scrollLeft() + document.offset().left,
             rightOffset: 0
         };
+        
+        tag.element
+            .addClass("tag")
+            .css({
+                width: tag.width + 'px', 
+                height: tag.height + 'px',
+                top: tag.topOffset + 'px',
+                left: tag.leftOffset + 'px'
+            })
+            .click( function()
+            {
+                calculateTagDimensions( document, tag );
+                drawMasks( document, tag );
+                if ( settings.onTagSelect )
+                {
+                    settings.onTagSelect( tag );
+                }
+            });        
         
         tag.element.draggable(
         {
@@ -100,13 +150,31 @@
             }                    
         });    
     
-        tags.push( tag );
+        tags.push( tag );       
         documentContainer.prepend( tag.element );
         return tag;
     }
     
+    function hideMasks()
+    {
+        if ( settings.onTagUnselect )
+        {
+            settings.onTagUnselect();
+        }
+                        
+        $.each( maskElements, function()
+        {
+            this.hide();
+        });
+    }
+    
     function drawMasks( document, tag )
     {       
+        $.each( maskElements, function()
+        {
+            this.show();
+        });    
+    
         maskElements.topMask.css("height", tag.topOffset + "px" );
         maskElements.bottomMask.css(
         {
@@ -146,7 +214,7 @@
     
     
         $("#tWidth").html( tag.width );
-        $("#tHeight").html( tag.height );                
+        $("#tHeight").html( tag.height );
            
         $("#tTop").html( tag.topOffset );
         $("#tLeft").html( tag.leftOffset );
