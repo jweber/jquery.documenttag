@@ -71,6 +71,16 @@
                 
                 cursor: move;
             }
+            
+            div.tagName
+            {
+                padding: 2px;
+                background-color: #F1A50A;
+                color: #333;
+                margin-top: 2px;
+                font-family: monospace;
+                border: solid 2px #BF860B;
+            }
         </style>
         
         <script type="text/javascript">
@@ -88,6 +98,13 @@
                         $("a#deleteTag").unbind('click').click(function()
                         {
                             $("#tag-image").documentTag( "deleteTag", tag );
+                        });
+                        
+                        $("#tagName").val( tag.attributes.name );
+                        $("#tagName").unbind("change").change(function()
+                        {
+                            tag.attributes.name = $(this).val();
+                            tag.element.children(".tagName:first").html( tag.attributes.name );
                         });
                     },
                     
@@ -112,8 +129,9 @@
             <a id="addTag" href="javascript:;" onclick="$('#tag-image').documentTag('addTag');">Add Tag</a>
             &nbsp;
             <span id="tag-properties" style="display: none;">
-                |
+                | &nbsp;
                 <a id="deleteTag" href="javascript:;">Delete Tag</a>
+                <input id="tagName" type="text" />
             </span>
             
         </div>

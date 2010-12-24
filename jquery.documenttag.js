@@ -81,7 +81,9 @@
                 hideMasks();
                 tags.splice( index, 1 );
             }
-        }
+        },
+        
+        attribute: function( 
     };
     
     function addTag( document )
@@ -89,7 +91,10 @@
         var tag = 
         {
             element: $("<div/>"),
-            attributes: {},
+            attributes: 
+            {
+                name: "Tag #" + (tags.length + 1)
+            },
             width: 100,
             height: 100,
             topOffset: $(window).scrollTop() + document.offset().top,
@@ -97,7 +102,7 @@
             leftOffset: $(window).scrollLeft() + document.offset().left,
             rightOffset: 0
         };
-        
+               
         tag.element
             .addClass("tag")
             .css({
@@ -142,13 +147,24 @@
             {
                 calculateTagDimensions( document, tag );
                 drawMasks( document, tag );
+                $(this).children(".tagName").css("top", tag.element.height() + "px");
             },
             stop: function()
             {
                 calculateTagDimensions( document, tag );
                 drawMasks( document, tag );
+                $(this).children(".tagName").css("top", tag.element.height() + "px");
             }                    
         });    
+    
+        var tagName = $("<div/>")
+            .addClass("tagName")
+            .html( tag.attributes.name )
+            .appendTo(tag.element)
+            .css({
+                position: 'absolute',
+                top: tag.element.height() + 'px'
+            });    
     
         tags.push( tag );       
         documentContainer.prepend( tag.element );
