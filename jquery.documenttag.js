@@ -4,6 +4,8 @@
 
     var settings = 
     {
+        debug: false,
+    
         maskEnabled: true,
         maskColor: '#333',
         maskOpacity: '0.8',
@@ -56,6 +58,36 @@
                         hideMasks();
                     });
                 });
+            }
+            
+            if ( settings.debug )
+            {
+                $("<div id='tag-info'/>")
+                    .css({
+                        position: "fixed",
+                        bottom: "0px",
+                        left: "0px",
+                        width: "100%",
+                        padding: "3px",
+                        borderTop: "solid 2px #BF860B",
+                        backgroundColor: "#fff",
+                        zIndex: "99999",
+                        color: "#333"                   
+                    })
+                    .append( "w: <span id='tWidth'></span>; " )
+                    .append( "h: <span id='tHeight'></span>; " )
+                    .append( "( rw: <span id='trWidth'></span>; " )
+                    .append( "rh: <span id='trHeight'></span>)<br/> " )
+                    .append( "top: <span id='tTop'></span>; " )
+                    .append( "left: <span id='tLeft'></span>; " )
+                    .append( "right: <span id='tRight'></span>; " )
+                    .append( "bottom: <span id='tBottom'></span><br/>" )
+                    .append( "rTop: <span id='trTop'></span>; " )
+                    .append( "rLeft: <span id='trLeft'></span>; " )
+                    .append( "rRight: <span id='trRight'></span>;  " )
+                    .append( "rBottom: <span id='trBottom'></span>" )
+                    .appendTo( $("body") );            
+
             }
         },
         
@@ -288,21 +320,24 @@
         tag.leftRelativeOffset = tag.leftOffset / document.width();
         tag.rightRelativeOffset = tag.rightOffset / document.width();
     
-        $("#tWidth").html( tag.width );
-        $("#tHeight").html( tag.height );
-           
-        $("#tTop").html( tag.topOffset );
-        $("#tLeft").html( tag.leftOffset );
-        $("#tRight").html( tag.rightOffset );
-        $("#tBottom").html( tag.bottomOffset );
-        
-        $("#trWidth").html( tag.relativeWidth );
-        $("#trHeight").html( tag.relativeHeight );
-        
-        $("#trTop").html( tag.topRelativeOffset );
-        $("#trLeft").html( tag.leftRelativeOffset );
-        $("#trRight").html( tag.rightRelativeOffset );
-        $("#trBottom").html( tag.bottomRelativeOffset );
+        if ( settings.debug )
+        {
+            $("#tWidth").html( tag.width );
+            $("#tHeight").html( tag.height );
+               
+            $("#tTop").html( tag.topOffset );
+            $("#tLeft").html( tag.leftOffset );
+            $("#tRight").html( tag.rightOffset );
+            $("#tBottom").html( tag.bottomOffset );
+            
+            $("#trWidth").html( tag.relativeWidth );
+            $("#trHeight").html( tag.relativeHeight );
+            
+            $("#trTop").html( tag.topRelativeOffset );
+            $("#trLeft").html( tag.leftRelativeOffset );
+            $("#trRight").html( tag.rightRelativeOffset );
+            $("#trBottom").html( tag.bottomRelativeOffset );
+        }
     }    
     
     $.fn.documentTag = function( method )
