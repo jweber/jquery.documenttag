@@ -27,7 +27,7 @@
                 border-bottom: solid 2px #BF860B;
                 background-color: #F1A50A;
                 height: 30px;
-                z-index: 9999;
+                z-index: 99999;
             }
             
             #tag-control a
@@ -58,7 +58,7 @@
                 padding: 3px;
                 border-top: solid 2px #BF860B;
                 background-color: #fff;
-                z-index: 9999;
+                z-index: 99999;
                 color: #333;
             }
         
@@ -97,7 +97,7 @@
                     if ( selected.data("tag") )
                     {
                         var tag = selected.data("tag");
-                        $(window).scrollTop( tag.topOffset - 10 );
+                        $("html,body").animate({scrollTop: (tag.topOffset - 20)}, 500);
                         tag.element.click();
                     }
                 });
@@ -142,7 +142,7 @@
             function getTags()
             {
                 var tags = $("#tag-image").documentTag("getTags");
-                
+
                 $("#tags").empty();
                 $("<option/>").html("Document Tags").appendTo( $("#tags") );
                 $.each(tags, function()

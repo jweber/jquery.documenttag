@@ -88,6 +88,22 @@
                 hideMasks();
                 tags.splice( index, 1 );
             }
+        },
+        
+        hideTagNames: function()
+        {
+            $.each( tags, function()
+            {
+                this.element.children(".tagName").hide();
+            });
+        },
+        
+        showTagNames: function()
+        {
+            $.each( tags, function()
+            {
+                this.element.children(".tagName").show();
+            });
         }
     };
     
@@ -186,6 +202,7 @@
             settings.onTagAdd( tag );
         }
         
+        calculateTagDimensions( document, tag );
         return tag;
     }
     
