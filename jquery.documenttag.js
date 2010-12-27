@@ -105,7 +105,14 @@
             topOffset: $(window).scrollTop() + document.offset().top,
             bottomOffset: 0,
             leftOffset: $(window).scrollLeft() + document.offset().left,
-            rightOffset: 0
+            rightOffset: 0,
+            
+            relativeWidth: 0,
+            relativeHeight: 0,
+            topRelativeOffset: 0,
+            bottomRelativeOffset: 0,
+            leftRelativeOffset: 0,
+            rightRelativeOffset: 0
         };
                
         tag.element
@@ -239,6 +246,13 @@
         tag.rightOffset  = image.width() - ( tag.leftOffset + tag.width );
         tag.bottomOffset = image.height() - ( tag.topOffset + tag.height );
     
+        tag.relativeWidth = tag.width / document.width();
+        tag.relativeHeight = tag.height / document.height();
+        
+        tag.topRelativeOffset = tag.topOffset / document.height();
+        tag.bottomRelativeOffset = tag.bottomOffset / document.height();
+        tag.leftRelativeOffset = tag.leftOffset / document.width();
+        tag.rightRelativeOffset = tag.rightOffset / document.width();
     
         $("#tWidth").html( tag.width );
         $("#tHeight").html( tag.height );
@@ -246,7 +260,15 @@
         $("#tTop").html( tag.topOffset );
         $("#tLeft").html( tag.leftOffset );
         $("#tRight").html( tag.rightOffset );
-        $("#tBottom").html( tag.bottomOffset );            
+        $("#tBottom").html( tag.bottomOffset );
+        
+        $("#trWidth").html( tag.relativeWidth );
+        $("#trHeight").html( tag.relativeHeight );
+        
+        $("#trTop").html( tag.topRelativeOffset );
+        $("#trLeft").html( tag.leftRelativeOffset );
+        $("#trRight").html( tag.rightRelativeOffset );
+        $("#trBottom").html( tag.bottomRelativeOffset );
     }    
     
     $.fn.documentTag = function( method )
