@@ -133,6 +133,37 @@
                     }
                 });
                 
+                // delayed to wait for base image resize to occur
+                setTimeout(function()
+                {
+                    $("#tag-image").documentTag("addTag", 
+                    {
+                        attributes: { name: "Effective Date" },
+                        relativeWidth: 0.2220026350461133,
+                        relativeHeight: 0.025629887054735012,
+                        relativeTopOffset: 0.05647263249348393,
+                        relativeLeftOffset: 0.7463768115942029
+                    });
+                    
+                    $("#tag-image").documentTag("addTag",
+                    {
+                        attributes: { name: "Legal Description" },
+                        relativeWidth: 0.8306982872200264,
+                        relativeHeight: 0.07298001737619461,
+                        relativeTopOffset: 0.3557775847089487,
+                        relativeLeftOffset: 0.12582345191040845
+                    });
+                    
+                    $("#tag-image").documentTag("addTag",
+                    {
+                        attributes: { name: "Clause" },
+                        relativeWidth: 0.8192675159235668,
+                        relativeHeight: 0.03571428571428571,
+                        relativeTopOffset: 0.45483193277310924,
+                        relativeLeftOffset: 0.12818471337579618
+                    });
+                }, 200 );
+                
                 jQuery(document)
                     .bind("keydown", "alt+a", function() { $('#addTag').click(); } )
                     .bind("keydown", "alt+d", function() { if ( ! $("#deleteTag").is(":hidden") ) { $("#deleteTag").click(); } } );

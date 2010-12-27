@@ -59,10 +59,10 @@
             }
         },
         
-        addTag: function()
+        addTag: function( tag )
         {
             hideMasks();
-            addTag( this );
+            addTag( this, tag );
         },
         
         getTags: function()
@@ -107,30 +107,47 @@
         }
     };
     
-    function addTag( document )
-    {      
-        var tag = 
+    function addTag( document, tag )
+    {   
+        if ( ! tag )
         {
-            element: $("<div/>"),
-            attributes: 
+            tag = 
             {
-                name: "Tag #" + (tags.length + 1)
-            },
-            width: 100,
-            height: 100,
-            topOffset: $(window).scrollTop() + document.offset().top,
-            bottomOffset: 0,
-            leftOffset: $(window).scrollLeft() + document.offset().left,
-            rightOffset: 0,
+                element: $("<div/>"),
+                attributes: 
+                {
+                    name: "Tag #" + (tags.length + 1)
+                },
+                width: 100,
+                height: 100,
+                topOffset: $(window).scrollTop() + document.offset().top,
+                bottomOffset: 0,
+                leftOffset: $(window).scrollLeft() + document.offset().left,
+                rightOffset: 0,
+                
+                relativeWidth: 0,
+                relativeHeight: 0,
+                topRelativeOffset: 0,
+                bottomRelativeOffset: 0,
+                leftRelativeOffset: 0,
+                rightRelativeOffset: 0
+            };        
+        }
+        // provided tag, set non-relative widths appropriately
+        else
+        {
+            tag.width = document.width() * tag.relativeWidth;
+            tag.height = document.height() * tag.relativeHeight;
             
-            relativeWidth: 0,
-            relativeHeight: 0,
-            topRelativeOffset: 0,
-            bottomRelativeOffset: 0,
-            leftRelativeOffset: 0,
-            rightRelativeOffset: 0
-        };
-               
+            tag.topOffset = ( document.height() * tag.relativeTopOffset ) + document.offset().top;
+            tag.leftOffset = ( document.width() * tag.relativeLeftOffset ) + document.offset().left;
+        }
+        
+        if ( ! tag.element )
+        {
+            tag.element = $("<div/>");
+        }
+         
         tag.element
             .addClass("tag")
             .css({
