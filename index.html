@@ -1,77 +1,198 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <meta charset='utf-8'>
+    <head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="jquery.documenttag.js"></script>
+        <script type="text/javascript" src="jquery.hotkeys.js"></script>
+        
+        <link href="ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" type="text/css" /> 
+        <style type="text/css">
+            body
+            {
+                margin: 30px 0 100px 0;
+            }
+            
+            #tag-image
+            {
+                border: solid 1px #ddd;
+            }
+            
+            #tag-control
+            {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                padding: 7px 3px 0px;
+                border-bottom: solid 2px #BF860B;
+                background-color: #F1A50A;
+                height: 30px;
+                z-index: 99999;
+            }
+            
+            #tag-control a
+            {
+                padding: 4px;
+                color: #000;
+                border: solid 1px #000;
+                text-decoration: none;
+                margin: 5px;
+                font-family: monospace;
+                
+                -moz-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                border-radius: 3px;	        	
+            }
+            
+            #tag-control a:hover
+            {
+                background-color: #EFC468;
+            }
+               
+            div.tag
+            {
+                position: absolute !important;
+                width: 100px;
+                height: 100px;
+                border: solid 2px #CF0000;
+                
+                cursor: move;
+            }
+            
+            div.tagName
+            {
+                padding: 2px;
+                background-color: #F1A50A;
+                color: #333;
+                margin-top: 2px;
+                font-family: monospace;
+                border: solid 2px #BF860B;
+                z-index: 10000;
+            }
+        </style>
+        
+        <script type="text/javascript">
+            
+            $(function()
+            {
+                $("#tag-image").width( $("body").width() );
+                $("body").css("margin-top", $("#tag-control").outerHeight());
+            
+                $("#tags").change(function()
+                {
+                    var selected = $("#tags option:selected");
+                    if ( selected.data("tag") )
+                    {
+                        var tag = selected.data("tag");
+                        $("html,body").animate({scrollTop: (tag.topOffset - 20)}, 500);
+                        tag.element.click();
+                    }
+                });
+            
+                $("#tag-image").documentTag({
+                    onTagAdd: function( tag )
+                    {
+                        getTags();
+                    },
+                    
+                    onTagSelect: function( tag )
+                    {
+                        $("#tag-properties").show();
+                     
+                        $("a#deleteTag").unbind('click').click(function()
+                        {
+                            $("#tag-image").documentTag( "deleteTag", tag );
+                            getTags();
+                        });
+                        
+                        $("#tagName").val( tag.attributes.name );
+                        $("#tagName").unbind("change").change(function()
+                        {
+                            tag.attributes.name = $(this).val();
+                            tag.element.children(".tagName:first").html( tag.attributes.name );
+                            getTags();
+                        });
+                    },
+                    
+                    onTagUnselect: function()
+                    {
+                        $("#tag-properties").hide();
+                    }
+                });
+                
+                // delayed to wait for base image resize to occur
+                setTimeout(function()
+                {
+                    $("#tag-image").documentTag("addTag", 
+                    {
+                        attributes: { name: "Tag 1" },
+                        relativeWidth: 0.2220026350461133,
+                        relativeHeight: 0.025629887054735012,
+                        relativeTopOffset: 0.05647263249348393,
+                        relativeLeftOffset: 0.7463768115942029
+                    });
+                    
+                    $("#tag-image").documentTag("addTag",
+                    {
+                        attributes: { name: "Paragraph 1" },
+                        relativeWidth: 0.8306982872200264,
+                        relativeHeight: 0.07298001737619461,
+                        relativeTopOffset: 0.3557775847089487,
+                        relativeLeftOffset: 0.12582345191040845
+                    });
+                    
+                    $("#tag-image").documentTag("addTag",
+                    {
+                        attributes: { name: "Paragraph 2" },
+                        relativeWidth: 0.8192675159235668,
+                        relativeHeight: 0.03571428571428571,
+                        relativeTopOffset: 0.45483193277310924,
+                        relativeLeftOffset: 0.12818471337579618
+                    });
+                }, 200 );
+                
+                jQuery(document)
+                    .bind("keydown", "alt+a", function() { $('#addTag').click(); } )
+                    .bind("keydown", "alt+d", function() { if ( ! $("#deleteTag").is(":hidden") ) { $("#deleteTag").click(); } } );
+                
+            });
+        
+            function getTags()
+            {
+                var tags = $("#tag-image").documentTag("getTags");
 
-  <title>jweber/jquery.documenttag @ GitHub</title>
-
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #fff;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #666; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #666; }
-    h3 { text-align: center; color: #666; }
-    a { color: #666; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
-
-<body>
-  <a href="http://github.com/jweber/jquery.documenttag"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-
-  <div id="container">
-
-    <div class="download">
-      <a href="http://github.com/jweber/jquery.documenttag/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/jweber/jquery.documenttag/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-
-    <h1><a href="http://github.com/jweber/jquery.documenttag">jquery.documenttag</a>
-      <span class="small">by <a href="http://github.com/jweber">jweber</a></span></h1>
-
-    <div class="description">
-      jQuery plugin for tagging portions of image files
-    </div>
-
-    <h2>Authors</h2>
-<p>jweber (john@jweber.org)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>John Weber (john@jweber.org)<br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/jweber/jquery.documenttag/zipball/master">zip</a> or
-      <a href="http://github.com/jweber/jquery.documenttag/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/jweber/jquery.documenttag</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/jweber/jquery.documenttag">jweber/jquery.documenttag</a>
-    </div>
-
-  </div>
-
-  
-</body>
+                $("#tags").empty();
+                $("<option/>").html("Document Tags").appendTo( $("#tags") );
+                $.each(tags, function()
+                {
+                    var tag = this;
+                    jQuery("<option/>")
+                        .html( tag.attributes.name )
+                        .data( "tag", tag )
+                        .appendTo( $("#tags") );
+                });
+            }
+        
+        </script>
+        
+    </head>
+    <body>
+        <div id="tag-control">
+            
+            <a id="addTag" href="javascript:;" onclick="$('#tag-image').documentTag('addTag');">Add Tag</a>
+            <select id="tags">    
+                <option>Document Tags</option>
+            </select>
+            
+            &nbsp;
+            <span id="tag-properties" style="display: none;">
+                | &nbsp;
+                <a id="deleteTag" href="javascript:;">Delete Tag</a>
+                <input id="tagName" type="text" />
+            </span>
+            
+        </div>
+        
+        <img id="tag-image" src="200t.png"  />
+    </body>
 </html>
